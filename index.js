@@ -1,38 +1,34 @@
-'use strict';
 
-const express = require('express');
-const socket = require('socket.io');
-//const path = require('path');
+var server = require('./server/io.js');
+var connections = require('./server/connections.js');
 
-const PORT = process.env.PORT || 4000;
-
-// app setup
-var app = express();
-var server = app.listen(PORT, function() {
-    console.log('listening on port', PORT);
-});
-
-// static files
-app.use(express.static('public'));
-
-// socket setup
-var io = socket(server);
-
-io.on('connection', function(socket) {
-    console.log('made socket connection', socket.id);
+server.io.on('connection', function(socket) {
+    console.log('client connected');
+    connections.addConnection(socket);
 
     socket.on('chat', function(data) {
-        io.sockets.emit('chat', data);
+        server.io.sockets.emit('chat', data);
     });
 
     socket.on('disconnect', function() {
         console.log('client disconnected');
+        connections.removeConnection(socket);
+    });
+
+    socket.on('register-server', function(data) {
+        console.log('register-server:', data);
+        //connections.setType(socket, data);
+
+        server.io.sockets.emit('server-registered', data);
+    });
+
+    // receive message from client
+    socket.on('sendtime', function(data) {
+        console.log('send time', data);
+        // send message to all clients
+        server.io.sockets.emit('time', data);
     });
 });
-
-function test() {
-    io.emit('time', new Date().toTimeString());
-}
 
 /*
 const PORT = process.env.PORT || 3000;

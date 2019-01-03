@@ -7,13 +7,10 @@
 <body>
     <h1>123</h1>
     <p id='server-time'></p>
+    <span id='wait-for-server'>Wait for server...</span>
+
+    <script src="jquery-3.3.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io();
-        var el = document.getElementById('server-time');
-        socket.on('time', function(timeString) {
-            el.innerHTML = 'Server time: ' + timeString;
-        });
-    </script>
+    <script src="client.js"></script>
 </body>
 </html>
