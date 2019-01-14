@@ -6,9 +6,20 @@ socket.on('time', function(data) {
     $('#server-time').html('Server time: ' + data.message);
 });
 
-socket.on('server-registered', function(data) {
-    $('#wait-for-server').html("server registered: " + data.name);
+socket.on('connect', function() {
+    $("#output").html("connected to node. Waiting for server...");
 });
+socket.on('disconnect', function() {
+    $('#output').html("disconnected from node.");
+});
+
+socket.on('connected-to-server', function(data) {
+    $('#output').html("connected to server " + data.name);
+});
+socket.on('server-disconnected', function(data) {
+    $('#output').html("server disconnected.");
+});
+
 /*
 // send message from client to server
 document.getElementById('sendtime').addEventListener('click', function() {
